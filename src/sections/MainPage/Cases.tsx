@@ -5,6 +5,7 @@ import { cases } from '../../data/cases'
 export const Cases = () => {
   const navigate = useNavigate()
   const [selectedCase, setSelectedCase] = useState<any>(null)
+  const [scrollProgress, setScrollProgress] = useState(0)
 
   // Выбираем 4 избранных проекта (кейсы 1, 2, 11, 12)
   const featuredCases = cases.filter(c => [1, 2, 11, 12].includes(c.id))
@@ -17,10 +18,20 @@ export const Cases = () => {
   const closeCaseModal = () => {
     setSelectedCase(null)
     document.body.style.overflow = 'auto'
+    setScrollProgress(0)
   }
 
   const goToPortfolio = () => {
     navigate('/portfolio')
+  }
+
+  // Handle scroll progress in modal
+  const handleModalScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const element = e.currentTarget
+    const scrollTop = element.scrollTop
+    const scrollHeight = element.scrollHeight - element.clientHeight
+    const progress = (scrollTop / scrollHeight) * 100
+    setScrollProgress(progress)
   }
 
   // Cleanup on unmount
@@ -54,41 +65,70 @@ export const Cases = () => {
           {featuredCases.map((caseItem, index) => (
             <div 
               key={index}
-              className="case-card card-tech rounded-2xl group cursor-pointer relative overflow-hidden"
+              className="group cursor-pointer relative"
               onClick={() => openCaseModal(caseItem)}
+              style={{ animationDelay: `${index * 0.1}s` }}
             >
-              {/* Gradient Header */}
-              <div className="relative h-24 mb-6">
-                <div className={`absolute inset-0 rounded-t-2xl ${caseItem.gradientClass} opacity-20 group-hover:opacity-30 transition-opacity duration-300`}></div>
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
-                
-                {/* Status indicator */}
-                <div className="absolute top-4 right-4">
-                  <div className={`w-3 h-3 rounded-full ${caseItem.status === 'completed' ? 'bg-emerald-400' : 'bg-amber-400'} shadow-lg`}></div>
-                </div>
-                
-                {/* Category badge */}
-                <div className="absolute bottom-4 left-4">
-                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${caseItem.categoryClass}`}>
-                    {caseItem.category}
-                  </span>
-                </div>
-                
-                {/* Large Icon */}
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                  <div className={`w-12 h-12 rounded-full ${caseItem.categoryClass.replace('text-', 'bg-').replace('/20', '/10')} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
-                    <i className={`${caseItem.icon} ${caseItem.categoryClass.replace('bg-', 'text-').replace('/20', '')} text-lg`}></i>
+              {/* Animated glow effect */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-electric-blue via-cyan-400 to-electric-blue rounded-3xl opacity-0 group-hover:opacity-30 blur-xl transition-all duration-700 group-hover:duration-500"></div>
+              
+              {/* Main card with glassmorphism */}
+              <div className="relative bg-gradient-to-br from-slate-800/90 via-navy-900/90 to-slate-900/90 backdrop-blur-xl rounded-3xl overflow-hidden border border-electric-blue/20 group-hover:border-electric-blue/40 transition-all duration-500 shadow-2xl group-hover:shadow-electric-blue/20 transform group-hover:-translate-y-2 group-hover:scale-[1.02]">
+                {/* Gradient Header with enhanced effects */}
+                <div className="relative h-32 mb-6 overflow-hidden">
+                  {/* Animated gradient background */}
+                  <div className={`absolute inset-0 ${caseItem.gradientClass} opacity-30 group-hover:opacity-50 transition-all duration-500`}></div>
+                  
+                  {/* Animated mesh gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent group-hover:via-white/10 transition-all duration-500"></div>
+                  
+                  {/* Floating particles */}
+                  <div className="absolute inset-0 opacity-50">
+                    <div className="absolute top-4 left-8 w-2 h-2 bg-white/40 rounded-full animate-pulse"></div>
+                    <div className="absolute top-8 right-12 w-1.5 h-1.5 bg-white/30 rounded-full animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+                    <div className="absolute bottom-6 left-16 w-1 h-1 bg-white/20 rounded-full animate-pulse" style={{ animationDelay: '1s' }}></div>
+                  </div>
+                  
+                  {/* Status indicator with enhanced pulse */}
+                  <div className="absolute top-4 right-4 z-10">
+                    <div className="relative">
+                      <div className={`w-4 h-4 rounded-full ${caseItem.status === 'completed' ? 'bg-emerald-400' : 'bg-amber-400'} shadow-lg`}></div>
+                      <div className={`absolute inset-0 rounded-full ${caseItem.status === 'completed' ? 'bg-emerald-400' : 'bg-amber-400'} animate-ping opacity-75`}></div>
+                    </div>
+                  </div>
+                  
+                  {/* Enhanced category badge */}
+                  <div className="absolute bottom-4 left-4">
+                    <span className={`px-4 py-1.5 rounded-full text-xs font-bold ${caseItem.categoryClass} backdrop-blur-sm border border-white/20 shadow-lg hover:scale-105 transition-transform`}>
+                      {caseItem.category}
+                    </span>
+                  </div>
+                  
+                  {/* Large Icon with enhanced animation */}
+                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
+                    <div className={`w-16 h-16 rounded-2xl ${caseItem.categoryClass.replace('text-', 'bg-gradient-to-br from-').replace('/20', '/20').replace('/80', '/30')} backdrop-blur-sm border border-white/20 flex items-center justify-center group-hover:scale-125 group-hover:rotate-6 transition-all duration-500 shadow-xl`}>
+                      <i className={`${caseItem.icon} ${caseItem.categoryClass.replace('bg-', 'text-').replace('/20', '')} text-2xl`}></i>
+                    </div>
                   </div>
                 </div>
-              </div>
-              
-              <div className="p-6 pt-0">
-                <h3 className="text-lg sm:text-xl font-bold text-white mb-3 group-hover:text-electric-blue transition-colors leading-tight">
-                  {caseItem.title}
-                </h3>
-                <p className="text-slate-300 text-sm mb-4 line-clamp-3">
-                  {caseItem.description}
-                </p>
+                
+                <div className="p-6 pt-0">
+                  {/* Title with enhanced gradient */}
+                  <h3 className="text-xl font-bold mb-3 bg-gradient-to-r from-white via-slate-200 to-slate-300 bg-clip-text text-transparent group-hover:from-electric-blue group-hover:via-cyan-400 group-hover:to-blue-400 transition-all duration-500 leading-tight">
+                    {caseItem.title}
+                  </h3>
+                  
+                  {/* Description */}
+                  <p className="text-slate-400 text-sm mb-4 line-clamp-3 leading-relaxed group-hover:text-slate-300 transition-colors duration-300">
+                    {caseItem.description}
+                  </p>
+                  
+                  {/* View button with ripple effect */}
+                  <div className="flex items-center text-electric-blue text-sm font-semibold opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                    <span>Подробнее</span>
+                    <i className="fas fa-arrow-right ml-2 transform group-hover:translate-x-2 transition-transform duration-300"></i>
+                  </div>
+                </div>
               </div>
             </div>
           ))}
@@ -107,26 +147,50 @@ export const Cases = () => {
         </div>
       </div>
       
-      {/* Case Modal */}
+      {/* Enhanced Case Modal */}
       {selectedCase && (
         <div 
           onClick={closeCaseModal}
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-fadeIn"
         >
+          {/* Progress bar */}
+          <div className="fixed top-0 left-0 right-0 h-1 bg-gray-200/20 z-[60]">
+            <div 
+              className="h-full bg-gradient-to-r from-electric-blue via-cyan-400 to-electric-blue transition-all duration-300 ease-out"
+              style={{ width: `${scrollProgress}%` }}
+            ></div>
+          </div>
+
           <div 
             onClick={(e) => e.stopPropagation()}
-            className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
+            onScroll={handleModalScroll}
+            className="relative bg-gradient-to-br from-white via-slate-50 to-white rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border-2 border-gray-100 animate-slideUp"
           >
-            <div className="p-8">
-              <div className="flex justify-between items-start mb-6">
-                <h3 className="text-3xl font-bold text-gray-900">{selectedCase.title}</h3>
+            {/* Sticky header with glassmorphism */}
+            <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-200/50 px-6 sm:px-8 py-4 sm:py-6">
+              <div className="flex justify-between items-start">
+                <div className="flex-1 pr-4">
+                  <h3 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-gray-900 via-gray-800 to-gray-700 bg-clip-text text-transparent leading-tight">
+                    {selectedCase.title}
+                  </h3>
+                  <div className="flex items-center gap-2 mt-2">
+                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${selectedCase.categoryClass}`}>
+                      {selectedCase.category}
+                    </span>
+                    <span className="text-xs text-gray-500">•</span>
+                    <span className="text-xs text-gray-600 font-medium">{selectedCase.duration}</span>
+                  </div>
+                </div>
                 <button 
                   onClick={closeCaseModal}
-                  className="text-gray-400 hover:text-gray-600 text-2xl"
+                  className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-700 transition-all duration-300 hover:rotate-90 hover:scale-110"
                 >
-                  <i className="fas fa-times"></i>
+                  <i className="fas fa-times text-lg"></i>
                 </button>
               </div>
+            </div>
+
+            <div className="p-6 sm:p-8">
               
               {/* Modal content based on case ID */}
               {selectedCase.id === 1 ? (

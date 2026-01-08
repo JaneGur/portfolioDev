@@ -5,6 +5,7 @@ import { Technologies } from '../sections/MainPage/Technologies'
 import { Cases } from '../sections/MainPage/Cases'
 import { About } from '../sections/MainPage/About'
 import { Contact } from '../sections/MainPage/Contact'
+import { ScrollToTop } from '../components/ScrollToTop'
 
 export const MainPage = () => {
   const [activeSection, setActiveSection] = useState('hero')
@@ -122,6 +123,8 @@ export const MainPage = () => {
           </div>
         </footer>
       </div>
+      
+      <ScrollToTop />
     </>
   )
 }
